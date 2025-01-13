@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Price List - AriesOne SaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Create Price List
+                </h2>
+            </div>
+            
+            <form id="createPriceListForm" class="mt-8 space-y-6">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" name="name" id="name" required
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" id="description" rows="3"
+                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <!-- Company Selection -->
+                <div>
+                    <label for="company_id" class="block text-sm font-medium text-gray-700">Company</label>
+                    <select name="company_id" id="company_id" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </select>
+                </div>
+
+                <!-- Effective Date -->
+                <div>
+                    <label for="effective_date" class="block text-sm font-medium text-gray-700">Effective Date</label>
+                    <input type="date" name="effective_date" id="effective_date" required
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Expiration Date -->
+                <div>
+                    <label for="expiration_date" class="block text-sm font-medium text-gray-700">Expiration Date</label>
+                    <input type="date" name="expiration_date" id="expiration_date"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Active Status -->
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_active" id="is_active" checked
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="is_active" class="ml-2 block text-sm text-gray-900">Active Price List</label>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="hidden text-red-600 text-sm"></div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Create Price List
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Fetch companies on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/companies');
+                const companies = await response.json();
+                const companySelect = document.getElementById('company_id');
+                
+                companies.forEach(company => {
+                    const option = document.createElement('option');
+                    option.value = company.id;
+                    option.textContent = company.name;
+                    companySelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching companies:', error);
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('createPriceListForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const errorDiv = document.getElementById('errorMessage');
+            
+            try {
+                const response = await fetch('/api/price-lists', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to create price list');
+                }
+                
+                // Redirect to price list detail page
+                const data = await response.json();
+                window.location.href = `/price-lists/${data.id}`;
+                
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Set minimum date for effective date
+        document.getElementById('effective_date').min = new Date().toISOString().split('T')[0];
+
+        // Update expiration date minimum when effective date changes
+        document.getElementById('effective_date').addEventListener('change', (e) => {
+            document.getElementById('expiration_date').min = e.target.value;
+        });
+    </script>
+</body>
+</html>

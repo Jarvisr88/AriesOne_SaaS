@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Migration - AriesOne SaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900">Database Migration</h2>
+                    <p class="mt-2 text-sm text-gray-600">Migrate data from ODBC to PostgreSQL</p>
+                </div>
+
+                <!-- Migration Form -->
+                <form id="migrationForm" class="space-y-6">
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Environment Selection -->
+                        <div>
+                            <label for="environment" class="block text-sm font-medium text-gray-700">Target Environment</label>
+                            <select id="environment" name="environment" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                <option value="development">Development</option>
+                                <option value="production">Production</option>
+                            </select>
+                        </div>
+
+                        <!-- ODBC Connection String -->
+                        <div>
+                            <label for="odbcString" class="block text-sm font-medium text-gray-700">ODBC Connection String</label>
+                            <input type="text" id="odbcString" name="odbcString" required
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="mt-1 text-sm text-gray-500">Example: Driver={SQL Server};Server=server_name;Database=db_name;Trusted_Connection=yes;</p>
+                        </div>
+
+                        <!-- Table Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Select Tables to Migrate</label>
+                            <div class="mt-2 space-y-2 max-h-60 overflow-y-auto" id="tableList">
+                                <!-- Tables will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Migration Actions -->
+                    <div class="flex justify-between items-center">
+                        <button type="button" id="loadTables"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Load Tables
+                        </button>
+                        
+                        <button type="submit"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Start Migration
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Migration Progress -->
+                <div id="migrationProgress" class="hidden mt-8 border-t border-gray-200 pt-8">
+                    <h3 class="text-lg font-medium text-gray-900">Migration Progress</h3>
+                    
+                    <div class="mt-4 space-y-4">
+                        <!-- Overall Progress -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-gray-700">Overall Progress</span>
+                                <span class="text-sm font-medium text-gray-700" id="overallProgressText">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full" id="overallProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Table Progress List -->
+                        <div class="space-y-4" id="tableProgress">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Migration Results -->
+                <div id="migrationResults" class="hidden mt-8 border-t border-gray-200 pt-8">
+                    <h3 class="text-lg font-medium text-gray-900">Migration Results</h3>
+                    
+                    <div class="mt-4">
+                        <div class="flex flex-col">
+                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                                    <table class="min-w-full divide-y divide-gray-300">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Table</th>
+                                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Rows Migrated</th>
+                                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Verification</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200" id="resultsTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Messages -->
+                <div id="statusMessage" class="hidden mt-4">
+                    <div class="rounded-md p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"></svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle loading tables
+        document.getElementById('loadTables').addEventListener('click', async () => {
+            const odbcString = document.getElementById('odbcString').value;
+            if (!odbcString) {
+                showStatus('error', 'Please enter ODBC connection string');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/migration/tables', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ odbc_string: odbcString })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load tables');
+                }
+                
+                const tables = await response.json();
+                populateTableList(tables);
+                
+            } catch (error) {
+                showStatus('error', 'Failed to load tables: ' + error.message);
+            }
+        });
+
+        // Populate table list
+        function populateTableList(tables) {
+            const tableList = document.getElementById('tableList');
+            tableList.innerHTML = '';
+            
+            tables.forEach(table => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center';
+                div.innerHTML = `
+                    <input type="checkbox" id="table_${table}" name="tables" value="${table}"
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="table_${table}" class="ml-2 block text-sm text-gray-900">
+                        ${table}
+                    </label>
+                `;
+                tableList.appendChild(div);
+            });
+        }
+
+        // Handle migration
+        document.getElementById('migrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const odbcString = document.getElementById('odbcString').value;
+            const environment = document.getElementById('environment').value;
+            const selectedTables = Array.from(document.querySelectorAll('input[name="tables"]:checked'))
+                .map(cb => cb.value);
+            
+            if (!odbcString) {
+                showStatus('error', 'Please enter ODBC connection string');
+                return;
+            }
+            
+            if (selectedTables.length === 0) {
+                showStatus('error', 'Please select at least one table');
+                return;
+            }
+            
+            try {
+                // Show progress section
+                document.getElementById('migrationProgress').classList.remove('hidden');
+                initializeProgress(selectedTables);
+                
+                const response = await fetch('/api/migration/tables', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        odbc_string: odbcString,
+                        tables: selectedTables,
+                        env_name: environment
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Migration failed');
+                }
+                
+                const result = await response.json();
+                showResults(result);
+                showStatus('success', 'Migration completed successfully');
+                
+            } catch (error) {
+                showStatus('error', 'Migration failed: ' + error.message);
+            }
+        });
+
+        // Initialize progress display
+        function initializeProgress(tables) {
+            const tableProgress = document.getElementById('tableProgress');
+            tableProgress.innerHTML = '';
+            
+            tables.forEach(table => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-gray-700">${table}</span>
+                        <span class="text-sm font-medium text-gray-700" id="progress_${table}_text">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" id="progress_${table}_bar" style="width: 0%"></div>
+                    </div>
+                `;
+                tableProgress.appendChild(div);
+            });
+        }
+
+        // Update progress
+        function updateProgress(table, progress) {
+            const progressBar = document.getElementById(`progress_${table}_bar`);
+            const progressText = document.getElementById(`progress_${table}_text`);
+            
+            if (progressBar && progressText) {
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${progress}%`;
+            }
+            
+            // Update overall progress
+            const allProgresses = Array.from(document.querySelectorAll('[id^="progress_"][id$="_text"]'))
+                .map(el => parseInt(el.textContent));
+            const overall = allProgresses.reduce((a, b) => a + b, 0) / allProgresses.length;
+            
+            document.getElementById('overallProgressBar').style.width = `${overall}%`;
+            document.getElementById('overallProgressText').textContent = `${Math.round(overall)}%`;
+        }
+
+        // Show migration results
+        function showResults(results) {
+            const resultsSection = document.getElementById('migrationResults');
+            const resultsTable = document.getElementById('resultsTable');
+            
+            resultsSection.classList.remove('hidden');
+            resultsTable.innerHTML = '';
+            
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                        ${result.table}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        ${result.status}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        ${result.rows_migrated}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm ${result.verified ? 'text-green-600' : 'text-red-600'}">
+                        ${result.verified ? 'Verified' : 'Failed'}
+                    </td>
+                `;
+                resultsTable.appendChild(row);
+            });
+        }
+
+        // Show status message
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('statusMessage');
+            const icon = statusDiv.querySelector('svg');
+            const text = statusDiv.querySelector('p');
+            
+            statusDiv.className = 'mt-4 rounded-md p-4 ' + 
+                (type === 'success' ? 'bg-green-50' : 'bg-red-50');
+            
+            icon.className = 'h-5 w-5 ' + 
+                (type === 'success' ? 'text-green-400' : 'text-red-400');
+                
+            icon.innerHTML = type === 'success' 
+                ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
+                : '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>';
+                
+            text.className = 'text-sm font-medium ' + 
+                (type === 'success' ? 'text-green-800' : 'text-red-800');
+            text.textContent = message;
+            
+            statusDiv.classList.remove('hidden');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

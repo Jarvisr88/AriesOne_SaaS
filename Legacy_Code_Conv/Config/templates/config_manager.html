@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Manager - AriesOne SaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900">Configuration Manager</h2>
+                    <p class="mt-2 text-sm text-gray-600">Manage environment configurations and migrate ODBC settings</p>
+                </div>
+
+                <!-- Environment Selector -->
+                <div class="mb-6">
+                    <label for="environment" class="block text-sm font-medium text-gray-700">Environment</label>
+                    <select id="environment" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        <option value="development">Development</option>
+                        <option value="production">Production</option>
+                    </select>
+                </div>
+
+                <!-- Configuration Form -->
+                <form id="configForm" class="space-y-6">
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <!-- Environment Settings -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-medium text-gray-900">Environment Settings</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Debug Mode</label>
+                                <div class="mt-1">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" id="debugMode" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2">Enable Debug Mode</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="logLevel" class="block text-sm font-medium text-gray-700">Log Level</label>
+                                <select id="logLevel" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                    <option value="DEBUG">DEBUG</option>
+                                    <option value="INFO">INFO</option>
+                                    <option value="WARNING">WARNING</option>
+                                    <option value="ERROR">ERROR</option>
+                                    <option value="CRITICAL">CRITICAL</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="maxConnections" class="block text-sm font-medium text-gray-700">Max Connections</label>
+                                <input type="number" id="maxConnections" min="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="connectionTimeout" class="block text-sm font-medium text-gray-700">Connection Timeout (seconds)</label>
+                                <input type="number" id="connectionTimeout" min="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Database Settings -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-medium text-gray-900">Database Settings</h3>
+                            
+                            <div>
+                                <label for="dbHost" class="block text-sm font-medium text-gray-700">Host</label>
+                                <input type="text" id="dbHost" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="dbPort" class="block text-sm font-medium text-gray-700">Port</label>
+                                <input type="number" id="dbPort" min="1" max="65535" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="dbName" class="block text-sm font-medium text-gray-700">Database Name</label>
+                                <input type="text" id="dbName" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="dbUsername" class="block text-sm font-medium text-gray-700">Username</label>
+                                <input type="text" id="dbUsername" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="dbPassword" class="block text-sm font-medium text-gray-700">Password</label>
+                                <input type="password" id="dbPassword" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="sslMode" class="block text-sm font-medium text-gray-700">SSL Mode</label>
+                                <select id="sslMode" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                    <option value="prefer">prefer</option>
+                                    <option value="require">require</option>
+                                    <option value="verify-ca">verify-ca</option>
+                                    <option value="verify-full">verify-full</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="flex justify-end space-x-4">
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Save Configuration
+                        </button>
+                    </div>
+                </form>
+
+                <!-- ODBC Migration -->
+                <div class="mt-10 pt-10 border-t border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">ODBC Migration</h3>
+                    <p class="mt-1 text-sm text-gray-600">Upload your ODBC configuration file to migrate settings to the new format</p>
+                    
+                    <form id="odbcForm" class="mt-4">
+                        <div class="flex items-center">
+                            <input type="file" id="odbcFile" accept=".ini,.conf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <button type="submit" class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Migrate
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Status Messages -->
+                <div id="statusMessage" class="mt-4 hidden">
+                    <div class="rounded-md p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"></svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load configuration on page load and environment change
+        async function loadConfig(environment) {
+            try {
+                const response = await fetch(`/api/config/environments/${environment}`);
+                const config = await response.json();
+                
+                // Update form values
+                document.getElementById('debugMode').checked = config.debug_mode;
+                document.getElementById('logLevel').value = config.log_level;
+                document.getElementById('maxConnections').value = config.max_connections;
+                document.getElementById('connectionTimeout').value = config.connection_timeout;
+                
+                // Database settings
+                document.getElementById('dbHost').value = config.database.host;
+                document.getElementById('dbPort').value = config.database.port;
+                document.getElementById('dbName').value = config.database.database;
+                document.getElementById('dbUsername').value = config.database.username;
+                document.getElementById('dbPassword').value = config.database.password;
+                document.getElementById('sslMode').value = config.database.ssl_mode;
+                
+            } catch (error) {
+                showStatus('error', 'Failed to load configuration: ' + error.message);
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const environment = document.getElementById('environment').value;
+            const config = {
+                [environment]: {
+                    env_name: environment,
+                    debug_mode: document.getElementById('debugMode').checked,
+                    log_level: document.getElementById('logLevel').value,
+                    max_connections: parseInt(document.getElementById('maxConnections').value),
+                    connection_timeout: parseInt(document.getElementById('connectionTimeout').value),
+                    database: {
+                        host: document.getElementById('dbHost').value,
+                        port: parseInt(document.getElementById('dbPort').value),
+                        database: document.getElementById('dbName').value,
+                        username: document.getElementById('dbUsername').value,
+                        password: document.getElementById('dbPassword').value,
+                        ssl_mode: document.getElementById('sslMode').value,
+                        application_name: 'AriesOne_SaaS'
+                    }
+                }
+            };
+            
+            try {
+                const response = await fetch('/api/config/environments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to save configuration');
+                }
+                
+                showStatus('success', 'Configuration saved successfully');
+                
+            } catch (error) {
+                showStatus('error', 'Failed to save configuration: ' + error.message);
+            }
+        });
+
+        // Handle ODBC migration
+        document.getElementById('odbcForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const file = document.getElementById('odbcFile').files[0];
+            if (!file) {
+                showStatus('error', 'Please select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('odbc_file', file);
+            
+            try {
+                const response = await fetch('/api/config/migrate-odbc', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to migrate ODBC configuration');
+                }
+                
+                showStatus('success', 'ODBC configuration migrated successfully');
+                
+                // Reload current environment config
+                loadConfig(document.getElementById('environment').value);
+                
+            } catch (error) {
+                showStatus('error', 'Failed to migrate ODBC configuration: ' + error.message);
+            }
+        });
+
+        // Show status message
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('statusMessage');
+            const icon = statusDiv.querySelector('svg');
+            const text = statusDiv.querySelector('p');
+            
+            statusDiv.className = 'mt-4 rounded-md p-4 ' + 
+                (type === 'success' ? 'bg-green-50' : 'bg-red-50');
+            
+            icon.className = 'h-5 w-5 ' + 
+                (type === 'success' ? 'text-green-400' : 'text-red-400');
+                
+            icon.innerHTML = type === 'success' 
+                ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
+                : '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>';
+                
+            text.className = 'text-sm font-medium ' + 
+                (type === 'success' ? 'text-green-800' : 'text-red-800');
+            text.textContent = message;
+            
+            statusDiv.classList.remove('hidden');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadConfig('development');
+        });
+
+        // Handle environment change
+        document.getElementById('environment').addEventListener('change', (e) => {
+            loadConfig(e.target.value);
+        });
+    </script>
+</body>
+</html>

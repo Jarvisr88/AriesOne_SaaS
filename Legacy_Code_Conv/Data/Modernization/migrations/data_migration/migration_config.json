@@ -1,0 +1,28 @@
+{
+    "mysql": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "your_mysql_password",
+        "database": "legacy_db"
+    },
+    "postgres": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "postgres",
+        "password": "your_postgres_password",
+        "database": "new_db"
+    },
+    "batch_size": 1000,
+    "verification": {
+        "expected_counts": {
+            "companies": 0,
+            "locations": 0,
+            "users": 0,
+            "roles": 0,
+            "user_roles": 0,
+            "price_lists": 0,
+            "price_list_items": 0
+        }
+    }
+}

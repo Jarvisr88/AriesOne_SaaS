@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price List Items - AriesOne SaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900" id="priceListName"></h2>
+                    <div class="space-x-4">
+                        <button onclick="showAddItemModal()"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Add Item
+                        </button>
+                        <button onclick="showBulkUpdateModal()"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Bulk Update
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div class="mt-8 flex flex-col">
+                    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-300">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Item Code</th>
+                                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
+                                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Unit Price</th>
+                                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Min Qty</th>
+                                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Max Qty</th>
+                                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                                <span class="sr-only">Actions</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsTableBody" class="divide-y divide-gray-200 bg-white">
+                                        <!-- Items will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="addItemModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden">
+        <div class="flex min-h-screen items-center justify-center">
+            <div class="bg-white rounded-lg p-8 max-w-md w-full">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Add Price List Item</h3>
+                <form id="addItemForm" class="space-y-4">
+                    <div>
+                        <label for="item_code" class="block text-sm font-medium text-gray-700">Item Code</label>
+                        <input type="text" name="item_code" id="item_code" required
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="item_description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea name="description" id="item_description" rows="2"
+                                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    </div>
+                    <div>
+                        <label for="unit_price" class="block text-sm font-medium text-gray-700">Unit Price</label>
+                        <input type="number" name="unit_price" id="unit_price" step="0.01" min="0" required
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="minimum_quantity" class="block text-sm font-medium text-gray-700">Min Quantity</label>
+                            <input type="number" name="minimum_quantity" id="minimum_quantity" min="1" value="1" required
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="maximum_quantity" class="block text-sm font-medium text-gray-700">Max Quantity</label>
+                            <input type="number" name="maximum_quantity" id="maximum_quantity" min="1"
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" name="is_active" id="item_is_active" checked
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="item_is_active" class="ml-2 block text-sm text-gray-900">Active Item</label>
+                    </div>
+                    <div id="addItemError" class="hidden text-red-600 text-sm"></div>
+                    <div class="mt-5 sm:mt-6 space-x-4">
+                        <button type="submit"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Add Item
+                        </button>
+                        <button type="button" onclick="hideAddItemModal()"
+                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Update Modal -->
+    <div id="bulkUpdateModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden">
+        <div class="flex min-h-screen items-center justify-center">
+            <div class="bg-white rounded-lg p-8 max-w-md w-full">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Bulk Price Update</h3>
+                <form id="bulkUpdateForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Adjustment Type</label>
+                        <div class="mt-2 space-y-2">
+                            <div class="flex items-center">
+                                <input type="radio" name="adjustment_type" value="fixed" id="fixed_adjustment" checked
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <label for="fixed_adjustment" class="ml-2 block text-sm text-gray-900">Fixed Amount</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" name="adjustment_type" value="percentage" id="percentage_adjustment"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <label for="percentage_adjustment" class="ml-2 block text-sm text-gray-900">Percentage</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="adjustment_value" class="block text-sm font-medium text-gray-700">Adjustment Value</label>
+                        <input type="number" name="adjustment_value" id="adjustment_value" step="0.01" required
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div id="bulkUpdateError" class="hidden text-red-600 text-sm"></div>
+                    <div class="mt-5 sm:mt-6 space-x-4">
+                        <button type="submit"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Update Prices
+                        </button>
+                        <button type="button" onclick="hideBulkUpdateModal()"
+                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let priceListId;
+        let items = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get price list ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            priceListId = urlParams.get('id');
+            
+            if (!priceListId) {
+                alert('Price list ID not provided');
+                return;
+            }
+
+            await loadPriceList();
+            await loadItems();
+        });
+
+        async function loadPriceList() {
+            try {
+                const response = await fetch(`/api/price-lists/${priceListId}`);
+                const priceList = await response.json();
+                document.getElementById('priceListName').textContent = priceList.name;
+            } catch (error) {
+                console.error('Error loading price list:', error);
+            }
+        }
+
+        async function loadItems() {
+            try {
+                const response = await fetch(`/api/price-lists/${priceListId}/items`);
+                items = await response.json();
+                renderItems();
+            } catch (error) {
+                console.error('Error loading items:', error);
+            }
+        }
+
+        function renderItems() {
+            const tbody = document.getElementById('itemsTableBody');
+            tbody.innerHTML = '';
+            
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">${item.item_code}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${item.description || ''}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">$${item.unit_price.toFixed(2)}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${item.minimum_quantity}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${item.maximum_quantity || 'N/A'}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${item.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium">
+                        <button onclick="editItem(${item.id})" class="text-blue-600 hover:text-blue-900">Edit</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modal functions
+        function showAddItemModal() {
+            document.getElementById('addItemModal').classList.remove('hidden');
+        }
+
+        function hideAddItemModal() {
+            document.getElementById('addItemModal').classList.add('hidden');
+            document.getElementById('addItemForm').reset();
+            document.getElementById('addItemError').classList.add('hidden');
+        }
+
+        function showBulkUpdateModal() {
+            document.getElementById('bulkUpdateModal').classList.remove('hidden');
+        }
+
+        function hideBulkUpdateModal() {
+            document.getElementById('bulkUpdateModal').classList.add('hidden');
+            document.getElementById('bulkUpdateForm').reset();
+            document.getElementById('bulkUpdateError').classList.add('hidden');
+        }
+
+        // Form submissions
+        document.getElementById('addItemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            formData.append('price_list_id', priceListId);
+            const errorDiv = document.getElementById('addItemError');
+            
+            try {
+                const response = await fetch('/api/price-lists/items', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to add item');
+                }
+                
+                await loadItems();
+                hideAddItemModal();
+                
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('bulkUpdateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const errorDiv = document.getElementById('bulkUpdateError');
+            
+            try {
+                const response = await fetch(`/api/price-lists/${priceListId}/bulk-update`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to update prices');
+                }
+                
+                await loadItems();
+                hideBulkUpdateModal();
+                
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Quantity validation
+        document.getElementById('minimum_quantity').addEventListener('change', (e) => {
+            const maxQty = document.getElementById('maximum_quantity');
+            maxQty.min = parseInt(e.target.value);
+            if (maxQty.value && parseInt(maxQty.value) < parseInt(e.target.value)) {
+                maxQty.value = e.target.value;
+            }
+        });
+    </script>
+</body>
+</html>

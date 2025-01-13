@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Dashboard - AriesOne SaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Monitoring Dashboard</h2>
+                <p class="mt-2 text-sm text-gray-600">Monitor application performance and logs</p>
+            </div>
+
+            <!-- Date Range Selector -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                    <div>
+                        <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
+                        <input type="datetime-local" id="startDate" name="startDate"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
+                        <input type="datetime-local" id="endDate" name="endDate"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" id="updateData"
+                                class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Update Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+                <!-- Total Requests -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Total Requests</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-semibold text-gray-900" id="totalRequests">0</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Response Time -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Avg Response Time</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-semibold text-gray-900" id="avgResponseTime">0 ms</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Rate -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Error Rate</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-semibold text-gray-900" id="errorRate">0%</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Log Volume -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">Log Volume</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-semibold text-gray-900" id="logVolume">0</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Response Time Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Response Time Distribution</h3>
+                    <canvas id="responseTimeChart"></canvas>
+                </div>
+
+                <!-- Error Distribution Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Error Distribution</h3>
+                    <canvas id="errorDistributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Endpoints Table -->
+            <div class="mt-6 bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Top Endpoints</h3>
+                <div class="flex flex-col">
+                    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                            <table class="min-w-full divide-y divide-gray-300">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Endpoint</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Requests</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Avg Response Time</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Error Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200" id="topEndpointsTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts
+        const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+        const errorDistributionCtx = document.getElementById('errorDistributionChart').getContext('2d');
+
+        const responseTimeChart = new Chart(responseTimeCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Response Time (ms)',
+                    data: [],
+                    borderColor: 'rgb(59, 130, 246)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const errorDistributionChart = new Chart(errorDistributionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Success', 'Client Error', 'Server Error'],
+                datasets: [{
+                    data: [0, 0, 0],
+                    backgroundColor: [
+                        'rgb(34, 197, 94)',
+                        'rgb(234, 179, 8)',
+                        'rgb(239, 68, 68)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Update dashboard data
+        async function updateDashboard() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            try {
+                const response = await fetch(`/api/monitoring/summary?start_date=${startDate}&end_date=${endDate}`);
+                const data = await response.json();
+
+                // Update summary cards
+                document.getElementById('totalRequests').textContent = data.requests.total;
+                document.getElementById('avgResponseTime').textContent = `${Math.round(data.requests.avg_duration * 1000)} ms`;
+                document.getElementById('errorRate').textContent = `${data.requests.error_rate.toFixed(1)}%`;
+                document.getElementById('logVolume').textContent = data.logs.total;
+
+                // Update response time chart
+                const metrics = await fetch(`/api/monitoring/metrics?start_date=${startDate}&end_date=${endDate}`);
+                const metricsData = await metrics.json();
+                
+                responseTimeChart.data.labels = metricsData.map(m => new Date(m.start_time * 1000).toLocaleTimeString());
+                responseTimeChart.data.datasets[0].data = metricsData.map(m => m.duration * 1000);
+                responseTimeChart.update();
+
+                // Update error distribution chart
+                const successCount = data.requests.total - data.requests.error_count;
+                const clientErrors = metricsData.filter(m => m.status_code >= 400 && m.status_code < 500).length;
+                const serverErrors = metricsData.filter(m => m.status_code >= 500).length;
+
+                errorDistributionChart.data.datasets[0].data = [successCount, clientErrors, serverErrors];
+                errorDistributionChart.update();
+
+                // Update top endpoints table
+                const tableBody = document.getElementById('topEndpointsTable');
+                tableBody.innerHTML = '';
+
+                data.top_endpoints.forEach(endpoint => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">${endpoint.endpoint}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${endpoint.count}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${Math.round(endpoint.avg_duration * 1000)} ms</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">${endpoint.error_rate.toFixed(1)}%</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Failed to update dashboard:', error);
+            }
+        }
+
+        // Set default date range to last 24 hours
+        const now = new Date();
+        const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+
+        document.getElementById('startDate').value = yesterday.toISOString().slice(0, 16);
+        document.getElementById('endDate').value = now.toISOString().slice(0, 16);
+
+        // Update on load and when update button is clicked
+        updateDashboard();
+        document.getElementById('updateData').addEventListener('click', updateDashboard);
+
+        // Update every 5 minutes
+        setInterval(updateDashboard, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
