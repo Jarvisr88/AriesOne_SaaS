@@ -1,0 +1,145 @@
+type Serial {
+  id: ID!
+  serialNumber: String!
+  maxUsageCount: Int!
+  expirationDate: DateTime
+  client: Client!
+  metadata: JSON
+  isDemo: Boolean!
+  isActive: Boolean!
+  usages: [SerialUsage!]!
+  createdAt: DateTime!
+  createdBy: String
+  updatedAt: DateTime!
+  updatedBy: String
+}
+
+type Client {
+  id: ID!
+  name: String!
+  clientNumber: String!
+  description: String
+  metadata: JSON
+  isActive: Boolean!
+  serials: [Serial!]!
+  contactEmail: String
+  contactPhone: String
+  notes: String
+  createdAt: DateTime!
+  createdBy: String
+  updatedAt: DateTime!
+  updatedBy: String
+}
+
+type SerialUsage {
+  id: ID!
+  serial: Serial!
+  deviceId: String!
+  ipAddress: String!
+  deviceInfo: JSON!
+  status: String!
+  createdAt: DateTime!
+  expiresAt: DateTime
+  notes: String
+}
+
+type SerialStats {
+  total: Int!
+  active: Int!
+  revoked: Int!
+  expired: Int!
+}
+
+type ClientStats {
+  total: Int!
+  active: Int!
+  expired: Int!
+  demo: Int!
+}
+
+type Query {
+  serials(
+    offset: Int = 0
+    limit: Int = 10
+    isActive: Boolean
+    isDemo: Boolean
+    clientId: ID
+  ): [Serial!]!
+  
+  serial(id: ID!): Serial
+  serialByNumber(serialNumber: String!): Serial
+  serialStats(id: ID!): SerialStats!
+  
+  clients(
+    offset: Int = 0
+    limit: Int = 10
+    isActive: Boolean
+  ): [Client!]!
+  
+  client(id: ID!): Client
+  clientByNumber(clientNumber: String!): Client
+  clientStats(id: ID!): ClientStats!
+  
+  searchClients(query: String!, offset: Int = 0, limit: Int = 10): [Client!]!
+}
+
+input CreateSerialInput {
+  serialNumber: String!
+  maxUsageCount: Int!
+  expirationDate: DateTime
+  clientId: ID!
+  metadata: JSON
+  isDemo: Boolean
+}
+
+input UpdateSerialInput {
+  maxUsageCount: Int
+  expirationDate: DateTime
+  metadata: JSON
+  isActive: Boolean
+}
+
+input CreateClientInput {
+  name: String!
+  clientNumber: String!
+  description: String
+  metadata: JSON
+  contactEmail: String
+  contactPhone: String
+  notes: String
+}
+
+input UpdateClientInput {
+  name: String
+  description: String
+  metadata: JSON
+  isActive: Boolean
+  contactEmail: String
+  contactPhone: String
+  notes: String
+}
+
+input ValidateSerialInput {
+  serialNumber: String!
+  deviceId: String!
+  deviceInfo: JSON!
+}
+
+type Mutation {
+  createSerial(input: CreateSerialInput!): Serial!
+  updateSerial(id: ID!, input: UpdateSerialInput!): Serial!
+  deleteSerial(id: ID!): Boolean!
+  validateSerial(input: ValidateSerialInput!): Boolean!
+  revokeSerial(id: ID!): Boolean!
+  renewSerial(id: ID!, expirationDate: DateTime!): Serial!
+  
+  createClient(input: CreateClientInput!): Client!
+  updateClient(id: ID!, input: UpdateClientInput!): Client!
+  deleteClient(id: ID!): Boolean!
+}
+
+type Subscription {
+  serialValidated(id: ID!): SerialUsage!
+  serialRevoked(id: ID!): Serial!
+  serialRenewed(id: ID!): Serial!
+}

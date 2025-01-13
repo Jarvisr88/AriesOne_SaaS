@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: Misc Module API
+  version: 1.0.0
+  description: API documentation for the Misc module
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Deposit:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        amount:
+          type: number
+          format: float
+        paymentMethod:
+          type: string
+          enum: [cash, check, credit, debit, transfer]
+        customerId:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum: [pending, completed, failed, voided]
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - amount
+        - paymentMethod
+        - customerId
+
+    Void:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        amount:
+          type: number
+          format: float
+        reason:
+          type: string
+        transactionId:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - amount
+        - reason
+
+    PurchaseOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        vendorId:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseOrderItem'
+        status:
+          type: string
+          enum: [draft, submitted, approved, received]
+        total:
+          type: number
+          format: float
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - vendorId
+        - items
+
+    PurchaseOrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        price:
+          type: number
+          format: float
+        notes:
+          type: string
+      required:
+        - name
+        - quantity
+        - price
+
+paths:
+  /deposits:
+    get:
+      summary: List deposits
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, completed, failed, voided]
+        - in: query
+          name: customerId
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of deposits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deposit'
+    post:
+      summary: Create deposit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deposit'
+      responses:
+        '201':
+          description: Deposit created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deposit'
+
+  /voids:
+    get:
+      summary: List voids
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: List of voids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Void'
+    post:
+      summary: Create void request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Void'
+      responses:
+        '201':
+          description: Void request created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+
+  /purchase-orders:
+    get:
+      summary: List purchase orders
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [draft, submitted, approved, received]
+        - in: query
+          name: vendorId
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of purchase orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PurchaseOrder'
+    post:
+      summary: Create purchase order
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrder'
+      responses:
+        '201':
+          description: Purchase order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrder'

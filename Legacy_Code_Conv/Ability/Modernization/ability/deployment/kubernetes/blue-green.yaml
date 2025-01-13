@@ -1,0 +1,133 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: ability-service-rollout
+  namespace: healthcare
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: ability-service
+  template:
+    metadata:
+      labels:
+        app: ability-service
+    spec:
+      containers:
+      - name: ability-service
+        image: ${REGISTRY}/ability-service:${VERSION}
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: ability-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: ability-secrets
+              key: redis-url
+        - name: RABBITMQ_URL
+          valueFrom:
+            secretKeyRef:
+              name: ability-secrets
+              key: rabbitmq-url
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+  strategy:
+    blueGreen:
+      activeService: ability-service-active
+      previewService: ability-service-preview
+      autoPromotionEnabled: false
+      scaleDownDelaySeconds: 300
+      prePromotionAnalysis:
+        templates:
+        - templateName: ability-service-analysis
+        args:
+        - name: service-name
+          value: ability-service
+      postPromotionAnalysis:
+        templates:
+        - templateName: ability-service-analysis
+        args:
+        - name: service-name
+          value: ability-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ability-service-active
+  namespace: healthcare
+spec:
+  selector:
+    app: ability-service
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ability-service-preview
+  namespace: healthcare
+spec:
+  selector:
+    app: ability-service
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: ability-service-analysis
+  namespace: healthcare
+spec:
+  metrics:
+  - name: success-rate
+    interval: 30s
+    count: 10
+    successCondition: result >= 0.95
+    failureCondition: result < 0.95
+    provider:
+      prometheus:
+        address: http://prometheus.monitoring:9090
+        query: |
+          sum(rate(http_requests_total{status=~"2.*", service="{{args.service-name}}"}[5m])) 
+          / 
+          sum(rate(http_requests_total{service="{{args.service-name}}"}[5m]))
+  - name: latency
+    interval: 30s
+    count: 10
+    successCondition: result <= 0.5
+    failureCondition: result > 0.5
+    provider:
+      prometheus:
+        address: http://prometheus.monitoring:9090
+        query: |
+          histogram_quantile(0.95, 
+            sum(rate(http_request_duration_seconds_bucket{service="{{args.service-name}}"}[5m])) 
+            by (le)
+          )

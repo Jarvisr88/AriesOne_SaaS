@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <ProjectType>local</ProjectType>
+    <ProjectVersion>7.10.377</ProjectVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>007315e9-38dd-471a-848c-9a08a6ed08df</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <AssemblyName>DMEWorks.CSharp</AssemblyName>
+    <OutputType>Library</OutputType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json" />
+    <Reference Include="Devart.Data.MySql" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="DMEWorks.Forms" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="ActiproSoftware.Wizard.WinForms" />
+    <Reference Include="Infragistics.Win.UltraWinEditors.v2" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="DMEWorks.Data" />
+    <Reference Include="Google.Apis.Calendar.v3" />
+    <Reference Include="Google.Apis.Auth" />
+    <Reference Include="HtmlAgilityPack" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Devart.Data" />
+    <Reference Include="Google.Apis" />
+    <Reference Include="Google.Apis.Core" />
+    <Reference Include="System.Security" />
+    <Compile Include="Global.cs" />
+    <Compile Include="SODA\Resource!1.cs" />
+    <Compile Include="SODA\ResourceColumn.cs" />
+    <Compile Include="SODA\ResourceMetadata.cs" />
+    <Compile Include="SODA\SodaClient.cs" />
+    <Compile Include="SODA\SodaDataFormat.cs" />
+    <Compile Include="SODA\SodaRequest.cs" />
+    <Compile Include="SODA\SodaResult.cs" />
+    <Compile Include="SODA\SoqlOrderDirection.cs" />
+    <Compile Include="SODA\SoqlQuery.cs" />
+    <Compile Include="SODA\Utilities\DateTimeConverter.cs" />
+    <Compile Include="SODA\Utilities\FourByFour.cs" />
+    <Compile Include="SODA\Utilities\JsonSerializationExtensions.cs" />
+    <Compile Include="SODA\Utilities\SodaUri.cs" />
+    <Compile Include="SODA\Utilities\WebExceptionExtensions.cs" />
+    <Compile Include="SODA\Models\HumanAddress.cs" />
+    <Compile Include="SODA\Models\LocationColumn.cs" />
+    <Compile Include="SODA\Models\PhoneColumn.cs" />
+    <Compile Include="SODA\Models\PhoneColumnType.cs" />
+    <Compile Include="SODA\Models\WebsiteUrlColumn.cs" />
+    <Compile Include="DMEWorks\DmercType.cs" />
+    <Compile Include="DMEWorks\DmercHelper.cs" />
+    <Compile Include="DMEWorks\Globals.cs" />
+    <Compile Include="DMEWorks\PermissionsStruct.cs" />
+    <Compile Include="DMEWorks\Properties\Resources.cs" />
+    <Compile Include="DMEWorks\Serials\BigNumber.cs" />
+    <Compile Include="DMEWorks\Serials\SerialData.cs" />
+    <Compile Include="DMEWorks\Reports\CustomReport.cs" />
+    <Compile Include="DMEWorks\Reports\DefaultReport.cs" />
+    <Compile Include="DMEWorks\Reports\Report.cs" />
+    <Compile Include="DMEWorks\Reports\DataSourceReports.cs" />
+    <Compile Include="DMEWorks\PriceUtilities\FormPriceListEditor.cs" />
+    <Compile Include="DMEWorks\PriceUtilities\FormPriceUpdater.cs" />
+    <Compile Include="DMEWorks\PriceUtilities\FormSelectPricelist.cs" />
+    <Compile Include="DMEWorks\PriceUtilities\FormUpdateICD9.cs" />
+    <Compile Include="DMEWorks\PriceUtilities\FormUpdateParameters.cs" />
+    <Compile Include="DMEWorks\Database\Odbcad32.cs" />
+    <Compile Include="DMEWorks\Misc\DialogDeposit.cs" />
+    <Compile Include="DMEWorks\Misc\DialogVoidSubmission.cs" />
+    <Compile Include="DMEWorks\Misc\FormReceivePurchaseOrder.cs" />
+    <Compile Include="DMEWorks\Imaging\ImagingHelper.cs" />
+    <Compile Include="DMEWorks\Imaging\Configuration\MimeTypeElement.cs" />
+    <Compile Include="DMEWorks\Imaging\Configuration\MimeTypeElementCollection.cs" />
+    <Compile Include="DMEWorks\Imaging\Configuration\MimeTypesSection.cs" />
+    <Compile Include="DMEWorks\Forms\FormLogin.cs" />
+    <Compile Include="DMEWorks\Data\Company.cs" />
+    <Compile Include="DMEWorks\Data\Location.cs" />
+    <Compile Include="DMEWorks\Data\Notification.cs" />
+    <Compile Include="DMEWorks\Data\Session.cs" />
+    <Compile Include="DMEWorks\Data\Converter!1.cs" />
+    <Compile Include="DMEWorks\Data\DateTimeConverter.cs" />
+    <Compile Include="DMEWorks\Data\DecimalConverter.cs" />
+    <Compile Include="DMEWorks\Data\DoubleConverter.cs" />
+    <Compile Include="DMEWorks\Data\GuidConverter.cs" />
+    <Compile Include="DMEWorks\Data\PaymentMethod.cs" />
+    <Compile Include="DMEWorks\Data\PaymentMethodConverter.cs" />
+    <Compile Include="DMEWorks\Data\VoidMethod.cs" />
+    <Compile Include="DMEWorks\Data\VoidMethodConverter.cs" />
+    <Compile Include="DMEWorks\Data\Extensions.cs" />
+    <Compile Include="DMEWorks\Data\PaymentExtraData.cs" />
+    <Compile Include="DMEWorks\Data\VoidedSubmissionExtraData.cs" />
+    <Compile Include="DMEWorks\Data\Serialization\Pair.cs" />
+    <Compile Include="DMEWorks\Data\Serialization\Pairs.cs" />
+    <Compile Include="DMEWorks\Data\MySql\MySqlFilterUtilities.cs" />
+    <Compile Include="DMEWorks\Data\MySql\QueryExpression.cs" />
+    <Compile Include="DMEWorks\Data\MySql\QueryExpressionVisitor.cs" />
+    <Compile Include="DMEWorks\Data\MySql\MySqlDataAdapterEventsBase.cs" />
+    <Compile Include="DMEWorks\Data\MySql\MySqlOdbcDsnInfo.cs" />
+    <Compile Include="DMEWorks\Data\MySql\MySqlConnectionInfo.cs" />
+    <Compile Include="DMEWorks\Data\MySql\MySqlServerInfo.cs" />
+    <Compile Include="DMEWorks\Data\MySql\MySqlUtilities.cs" />
+    <Compile Include="DMEWorks\Csv\CachedCsvReader.cs" />
+    <Compile Include="DMEWorks\Csv\CsvReader.cs" />
+    <Compile Include="DMEWorks\Csv\ParseErrorEventArgs.cs" />
+    <Compile Include="DMEWorks\Csv\MalformedCsvException.cs" />
+    <Compile Include="DMEWorks\Csv\MissingFieldCsvException.cs" />
+    <Compile Include="DMEWorks\Csv\MissingFieldAction.cs" />
+    <Compile Include="DMEWorks\Csv\ParseErrorAction.cs" />
+    <Compile Include="DMEWorks\Csv\Resources\ExceptionMessage.cs" />
+    <Compile Include="DMEWorks\Core\FormEntityMaintain.cs" />
+    <Compile Include="DMEWorks\Core\Navigator.cs" />
+    <Compile Include="DMEWorks\Core\CreateSourceEventArgs.cs" />
+    <Compile Include="DMEWorks\Core\FillSourceEventArgs.cs" />
+    <Compile Include="DMEWorks\Core\PagedFilter.cs" />
+    <Compile Include="DMEWorks\Core\PagedFillSourceEventArgs.cs" />
+    <Compile Include="DMEWorks\Core\NavigatorRowClickEventArgs.cs" />
+    <Compile Include="DMEWorks\Core\NavigatorOptionsBase.cs" />
+    <Compile Include="DMEWorks\Core\NavigatorOptions.cs" />
+    <Compile Include="DMEWorks\Core\PagedNavigatorOptions.cs" />
+    <Compile Include="DMEWorks\Core\NavigatorEventsHandler.cs" />
+    <Compile Include="DMEWorks\Core\PagedNavigator.cs" />
+    <Compile Include="DMEWorks\Core\TableName.cs" />
+    <Compile Include="DMEWorks\Core\ButtonsAttribute.cs" />
+    <Compile Include="DMEWorks\Core\EntityCreatedEventArgs.cs" />
+    <Compile Include="DMEWorks\Core\IEntityCreatedEventListener.cs" />
+    <Compile Include="DMEWorks\Core\FormMaintain.cs" />
+    <Compile Include="DMEWorks\Core\FormMaintainBase.cs" />
+    <Compile Include="DMEWorks\Core\FormParameters.cs" />
+    <Compile Include="DMEWorks\Core\HandleDatabaseChangedAttribute.cs" />
+    <Compile Include="DMEWorks\Core\IParameters.cs" />
+    <Compile Include="DMEWorks\Controls\ChangesTracker.cs" />
+    <Compile Include="DMEWorks\Controls\ControlAddress.cs" />
+    <Compile Include="DMEWorks\Controls\ControlName.cs" />
+    <Compile Include="DMEWorks\Controls\MapProviderEventArgs.cs" />
+    <Compile Include="DMEWorks\Calendar\DialogCreateCalendarEvent.cs" />
+    <Compile Include="DMEWorks\Calendar\Entry!1.cs" />
+    <Compile Include="DMEWorks\Ability\FormSameOrSimilar.cs" />
+    <Compile Include="DMEWorks\Ability\Credentials.cs" />
+    <Compile Include="DMEWorks\Ability\AbilityCredentials.cs" />
+    <Compile Include="DMEWorks\Ability\EnvelopeCredentials.cs" />
+    <Compile Include="DMEWorks\Ability\IntegrationSettings.cs" />
+    <Compile Include="DMEWorks\Ability\Common\Application.cs" />
+    <Compile Include="DMEWorks\Ability\Common\ApplicationName.cs" />
+    <Compile Include="DMEWorks\Ability\Common\Credential.cs" />
+    <Compile Include="DMEWorks\Ability\Common\DataCenterType.cs" />
+    <Compile Include="DMEWorks\Ability\Common\Error.cs" />
+    <Compile Include="DMEWorks\Ability\Common\ErrorDetail.cs" />
+    <Compile Include="DMEWorks\Ability\Common\LineOfBusiness.cs" />
+    <Compile Include="DMEWorks\Ability\Common\MedicareMainframe.cs" />
+    <Compile Include="DMEWorks\Ability\Cmn\CmnRequest.cs" />
+    <Compile Include="DMEWorks\Ability\Cmn\CmnRequestSearchCriteria.cs" />
+    <Compile Include="DMEWorks\Ability\Cmn\CmnResponse.cs" />
+    <Compile Include="DMEWorks\Ability\Cmn\CmnResponseEntry.cs" />
+    <Compile Include="Images\Service\TemplateException.cs" />
+    <Compile Include="Images\Service\Templater.cs" />
+    <EmbeddedResource Include="DMEWorks.Ability.FormSameOrSimilar.resources" />
+    <EmbeddedResource Include="DMEWorks.Calendar.DialogCreateCalendarEvent.resources" />
+    <EmbeddedResource Include="DMEWorks.Controls.ControlAddress.resources" />
+    <EmbeddedResource Include="DMEWorks.Controls.ControlName.resources" />
+    <EmbeddedResource Include="DMEWorks.Core.FormMaintainBase.resources" />
+    <EmbeddedResource Include="DMEWorks.Core.Navigator.resources" />
+    <EmbeddedResource Include="DMEWorks.Core.PagedNavigator.resources" />
+    <EmbeddedResource Include="DMEWorks.Csv.Resources.ExceptionMessage.resources" />
+    <EmbeddedResource Include="DMEWorks.Forms.FormLogin.resources" />
+    <EmbeddedResource Include="DMEWorks.Misc.DialogDeposit.resources" />
+    <EmbeddedResource Include="DMEWorks.Misc.DialogVoidSubmission.resources" />
+    <EmbeddedResource Include="DMEWorks.Misc.FormReceivePurchaseOrder.resources" />
+    <EmbeddedResource Include="DMEWorks.PriceUtilities.FormPriceListEditor.resources" />
+    <EmbeddedResource Include="DMEWorks.PriceUtilities.FormPriceUpdater.resources" />
+    <EmbeddedResource Include="DMEWorks.PriceUtilities.FormSelectPricelist.resources" />
+    <EmbeddedResource Include="DMEWorks.PriceUtilities.FormUpdateICD9.resources" />
+    <EmbeddedResource Include="DMEWorks.PriceUtilities.FormUpdateParameters.resources" />
+    <EmbeddedResource Include="DMEWorks.Properties.Resources.resources" />
+    <EmbeddedResource Include="DMEWorks.Resources.client_secret.json" />
+  </ItemGroup>
+</Project>

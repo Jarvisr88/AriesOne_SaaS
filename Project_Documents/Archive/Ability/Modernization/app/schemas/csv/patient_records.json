@@ -1,0 +1,93 @@
+{
+  "name": "patient_records",
+  "columns": [
+    {
+      "name": "patient_id",
+      "data_type": "string",
+      "required": true,
+      "validation_rules": {
+        "regex": "^[A-Z]{2}\\d{6}$",
+        "unique": true
+      }
+    },
+    {
+      "name": "first_name",
+      "data_type": "string",
+      "required": true,
+      "transformation_rules": {
+        "trim": true,
+        "uppercase": true
+      }
+    },
+    {
+      "name": "last_name",
+      "data_type": "string",
+      "required": true,
+      "transformation_rules": {
+        "trim": true,
+        "uppercase": true
+      }
+    },
+    {
+      "name": "date_of_birth",
+      "data_type": "date",
+      "required": true,
+      "transformation_rules": {
+        "format": "date"
+      }
+    },
+    {
+      "name": "gender",
+      "data_type": "string",
+      "required": true,
+      "validation_rules": {
+        "allowed_values": ["M", "F", "O"]
+      },
+      "transformation_rules": {
+        "uppercase": true
+      }
+    },
+    {
+      "name": "phone",
+      "data_type": "string",
+      "required": false,
+      "validation_rules": {
+        "regex": "^\\+?[1-9]\\d{1,14}$"
+      }
+    },
+    {
+      "name": "email",
+      "data_type": "string",
+      "required": false,
+      "validation_rules": {
+        "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+      },
+      "transformation_rules": {
+        "lowercase": true
+      }
+    },
+    {
+      "name": "insurance_id",
+      "data_type": "string",
+      "required": true,
+      "validation_rules": {
+        "regex": "^[A-Z0-9]{10}$"
+      }
+    },
+    {
+      "name": "status",
+      "data_type": "string",
+      "required": true,
+      "validation_rules": {
+        "allowed_values": ["ACTIVE", "INACTIVE", "PENDING"]
+      },
+      "transformation_rules": {
+        "uppercase": true
+      }
+    }
+  ],
+  "delimiter": ",",
+  "encoding": "utf-8",
+  "skip_rows": 0,
+  "has_header": true
+}
